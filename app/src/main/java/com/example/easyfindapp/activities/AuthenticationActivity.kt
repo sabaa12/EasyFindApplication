@@ -4,6 +4,8 @@ import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import com.example.easyfindapp.R
 import com.example.easyfindapp.fragments.authentication.SignUpFragment
+import com.example.easyfindapp.network.ResponseCallback
+import com.example.easyfindapp.network.ResponseLoader
 
 class AuthenticationActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -18,4 +20,5 @@ class AuthenticationActivity : AppCompatActivity() {
             SignUpFragment(), "SignUpFragment")
         transaction.commit()
     }
+
 }

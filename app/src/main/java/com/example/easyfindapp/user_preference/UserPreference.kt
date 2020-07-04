@@ -5,6 +5,7 @@ import com.example.easyfindapp.App
 
 object UserPreference {
     const val USER_ID = "User ID"
+
     private val preference by lazy {
         App.appInstance!!.applicationContext.getSharedPreferences("User",Context.MODE_PRIVATE)
     }
