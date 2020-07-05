@@ -7,18 +7,21 @@ import android.view.ViewGroup
 import android.widget.Toast
 import com.example.easyfindapp.R
 import com.example.easyfindapp.activities.DashBoardActivity
+import com.example.easyfindapp.extensions.emailValidation
 import com.example.easyfindapp.fragments.BaseFragment
 import com.example.easyfindapp.models.SignInResponseModel
 import com.example.easyfindapp.network.EndPoints
 import com.example.easyfindapp.network.ResponseCallback
 import com.example.easyfindapp.network.ResponseLoader
+import com.example.easyfindapp.tools.Tools
 import com.example.easyfindapp.user_preference.UserPreference
 import com.google.gson.Gson
 import kotlinx.android.synthetic.main.fragment_sign_in.view.*
+import kotlinx.android.synthetic.main.fragment_sign_in.view.inputEmailAddressSignIn
 import kotlinx.android.synthetic.main.loader_layout.*
 
-
 class SignInFragment : BaseFragment() {
+    private var emailValid: Boolean = false
     override fun getFragmentLayout() = R.layout.fragment_sign_in
 
     override fun startFragmentConfiguration(
@@ -30,6 +33,11 @@ class SignInFragment : BaseFragment() {
     }
 
     private fun init() {
+        clickListeners()
+        checkEmailValidation()
+    }
+
+    private fun clickListeners() {
         itemView!!.createNewAccountView.setOnClickListener {
             openSignUpFragment()
         }
@@ -39,12 +47,28 @@ class SignInFragment : BaseFragment() {
         }
     }
 
+    private fun checkEmailValidation() {
+        itemView!!.inputEmailAddressSignIn.emailValidation {
+            emailValid = it
+        }
+    }
+
     private fun checkEmptyFields() {
         if (itemView!!.inputEmailAddressSignIn.text.isEmpty() || itemView!!.inputPasswordSignIn.text.isEmpty()
         ) {
-            Toast.makeText(
-                activity, "Pleas fill all fields", Toast.LENGTH_LONG
-            ).show()
+            Tools.errorDialog(
+                activity!!,
+                resources.getString(R.string.required_fields),
+                resources.getString(R.string.fill_sign_in_required_fields),
+                resources.getString(R.string.try_again)
+            )
+        } else if (!emailValid) {
+            Tools.errorDialog(
+                activity!!,
+                resources.getString(R.string.input_field_validation),
+                resources.getString(R.string.fill_valid_email),
+                resources.getString(R.string.try_again)
+            )
         } else {
             sendSignUpRequest(
                 itemView!!.inputEmailAddressSignIn.text.toString(),
@@ -85,7 +109,7 @@ class SignInFragment : BaseFragment() {
             })
     }
 
-    private fun parserSignInResponse(response : String) {
+    private fun parserSignInResponse(response: String) {
         val signInResponseModel = Gson().fromJson(response, SignInResponseModel::class.java)
         if (signInResponseModel.status == "ok") {
             openDashBoardActivity()
@@ -93,7 +117,7 @@ class SignInFragment : BaseFragment() {
         }
     }
 
-    private fun saveUserInformation(userID : String) {
+    private fun saveUserInformation(userID: String) {
         UserPreference.saveData(UserPreference.USER_ID, userID)
     }
 
@@ -103,4 +127,5 @@ class SignInFragment : BaseFragment() {
         startActivity(intent)
         activity!!.overridePendingTransition(android.R.anim.fade_in, android.R.anim.fade_out)
     }
+
 }

@@ -1,11 +1,12 @@
 <?xml version="1.0" encoding="utf-8"?>
-<FrameLayout
-    xmlns:android="http://schemas.android.com/apk/res/android"
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     tools:context=".fragments.authentication.SignUpFragment">
+
+    <include layout="@layout/loader_layout" />
 
     <ImageView
         android:layout_width="150dp"
@@ -16,10 +17,10 @@
         android:src="@mipmap/ic_logo" />
 
     <LinearLayout
-        android:layout_marginTop="55dp"
-        android:layout_gravity="center_vertical"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:layout_gravity="center_vertical"
+        android:layout_marginTop="55dp"
         android:orientation="vertical">
 
         <com.google.android.material.textfield.TextInputLayout
@@ -71,13 +72,13 @@
         </com.google.android.material.textfield.TextInputLayout>
 
         <TextView
-            android:textColor="@color/colorGray"
-            android:textSize="17sp"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
             android:layout_marginTop="10dp"
             android:gravity="center"
             android:text="@string/choose_your_role"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"/>
+            android:textColor="@color/colorGray"
+            android:textSize="17sp" />
 
         <RadioGroup
             android:id="@+id/selectUserRole"

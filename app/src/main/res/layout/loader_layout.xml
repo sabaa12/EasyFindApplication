@@ -4,13 +4,13 @@
     android:id="@+id/spinLoaderView"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="#7D878787"
+    android:background="@color/colorGray"
     android:clickable="true"
     android:visibility="gone"
     android:focusable="true">
 
     <com.github.ybq.android.spinkit.SpinKitView
-        style="@style/SpinKitView.Large.ThreeBounce"
+        style="@style/SpinKitView.Large.Circle"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="center"

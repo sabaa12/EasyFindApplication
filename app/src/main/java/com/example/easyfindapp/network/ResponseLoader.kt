@@ -1,7 +1,5 @@
 package com.example.easyfindapp.network
 
-import android.util.Log
-import android.util.Log.d
 import android.view.View
 import com.example.easyfindapp.network.EndPoints.HTTP_200_OK
 import com.example.easyfindapp.network.EndPoints.HTTP_201_CREATED
@@ -15,21 +13,15 @@ import org.json.JSONObject
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
-import java.lang.Error
 
 object ResponseLoader {
 
-//    fun getUsersResponse(loaderView: View? = null, responseCallback: ResponseCallback) {
-//        loaderView?.visibility = View.VISIBLE
-//        apiService.getUsers(EndPoints.USERS).enqueue(callback(loaderView, responseCallback))
-//    }
-
-    fun getPostResponse(path : String, parameters : MutableMap<String,String>, loaderView: View? = null,responseCallback: ResponseCallback) {
+    fun getPostResponse(path : String, parameters : MutableMap<String,String>, loaderView: View?, responseCallback: ResponseCallback) {
         loaderView?.visibility = View.VISIBLE
         apiService.requestPOST(path,parameters).enqueue(callback(loaderView,responseCallback))
     }
 
-    private fun callback(loaderView: View? = null, responseCallback: ResponseCallback) = object : Callback<String> {
+    private fun callback(loaderView: View?, responseCallback: ResponseCallback) = object : Callback<String> {
         override fun onFailure(call: Call<String>, t: Throwable)  {
             if (loaderView != null) {
                 loaderView.visibility = View.GONE
@@ -38,13 +30,14 @@ object ResponseLoader {
         }
 
         override fun onResponse(call: Call<String>, response: Response<String>) {
-            checkResponseCode(response, responseCallback)
+            checkResponseCode(response, responseCallback, loaderView)
         }
     }
 
     private fun checkResponseCode(
         response: Response<String>,
-        responseCallback: ResponseCallback
+        responseCallback: ResponseCallback,
+        loaderView: View?
     ) {
         if (response.code() == HTTP_200_OK || response.code() == HTTP_201_CREATED)
             try {
@@ -64,6 +57,10 @@ object ResponseLoader {
             parseError("No Content", responseCallback)
         else {
             responseCallback.onFailure("The request is incorrect!")
+        }
+
+        if (loaderView != null) {
+            loaderView.visibility = View.GONE
         }
     }
 

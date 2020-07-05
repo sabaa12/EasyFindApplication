@@ -8,6 +8,8 @@
     tools:context=".fragments.authentication.SignUpFragment"
     xmlns:app="http://schemas.android.com/apk/res-auto">
 
+    <include layout="@layout/loader_layout"/>
+
     <ImageView
         android:layout_marginTop="20dp"
         android:layout_gravity="center_horizontal"
