@@ -1,5 +1,6 @@
 package com.example.easyfindapp.network
 
+import android.util.Log.d
 import android.view.View
 import com.example.easyfindapp.network.EndPoints.HTTP_200_OK
 import com.example.easyfindapp.network.EndPoints.HTTP_201_CREATED
@@ -16,23 +17,33 @@ import retrofit2.Response
 
 object ResponseLoader {
 
-    fun getPostResponse(path : String, parameters : MutableMap<String,String>, loaderView: View?, responseCallback: ResponseCallback) {
+    fun isUserCompleteResponse(path : String, id : String, loaderView: View?, responseCallback: ResponseCallback) {
+        apiService.requestGetWithID(path,id).enqueue(callback(loaderView,responseCallback))
+    }
+
+    fun getPostResponse(
+        path: String,
+        parameters: MutableMap<String, String>,
+        loaderView: View?,
+        responseCallback: ResponseCallback
+    ) {
         loaderView?.visibility = View.VISIBLE
-        apiService.requestPOST(path,parameters).enqueue(callback(loaderView,responseCallback))
+        apiService.requestPOST(path, parameters).enqueue(callback(loaderView, responseCallback))
     }
 
-    private fun callback(loaderView: View?, responseCallback: ResponseCallback) = object : Callback<String> {
-        override fun onFailure(call: Call<String>, t: Throwable)  {
-            if (loaderView != null) {
-                loaderView.visibility = View.GONE
+    private fun callback(loaderView: View?, responseCallback: ResponseCallback) =
+        object : Callback<String> {
+            override fun onFailure(call: Call<String>, t: Throwable) {
+                if (loaderView != null) {
+                    loaderView.visibility = View.GONE
+                }
+                responseCallback.onFailure(t.toString())
             }
-            responseCallback.onFailure(t.toString())
-        }
 
-        override fun onResponse(call: Call<String>, response: Response<String>) {
-            checkResponseCode(response, responseCallback, loaderView)
+            override fun onResponse(call: Call<String>, response: Response<String>) {
+                checkResponseCode(response, responseCallback, loaderView)
+            }
         }
-    }
 
     private fun checkResponseCode(
         response: Response<String>,
@@ -65,13 +76,9 @@ object ResponseLoader {
     }
 
     private fun parseError(errorBody: String, responseCallback: ResponseCallback) {
-        try {
-            val errorJson = JSONObject(errorBody)
-            if (errorJson.has("status")) {
-                responseCallback.onError(errorJson.getString("status"))
-            }
-        } catch (e : JSONException) {
-            responseCallback.onError("Error, Try Again!")
+        val errorJson = JSONObject(errorBody)
+        if (errorJson.has("error")) {
+            responseCallback.onError(errorJson.getString("error"))
         }
     }
 }

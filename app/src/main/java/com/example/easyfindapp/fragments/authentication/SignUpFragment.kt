@@ -6,6 +6,7 @@ import android.view.LayoutInflater
 import android.view.ViewGroup
 import android.widget.Toast
 import com.example.easyfindapp.R
+import com.example.easyfindapp.activities.CompleteProfileActivity
 import com.example.easyfindapp.activities.DashBoardActivity
 import com.example.easyfindapp.extensions.emailValidation
 import com.example.easyfindapp.fragments.BaseFragment
@@ -23,6 +24,7 @@ import kotlinx.android.synthetic.main.loader_layout.*
 class SignUpFragment : BaseFragment() {
     private var emailValid: Boolean = false
     private var role: String? = null
+    private var emailAddress: String? = null
     override fun getFragmentLayout() = R.layout.fragment_sign_up
 
     override fun startFragmentConfiguration(
@@ -103,6 +105,8 @@ class SignUpFragment : BaseFragment() {
                 inputPasswordSignUp.text.toString(),
                 role!!
             )
+            emailAddress = inputEmailAddressSignUp.text.toString()
+
         }
     }
 
@@ -131,21 +135,28 @@ class SignUpFragment : BaseFragment() {
     }
 
     private fun openDashBoardActivity() {
-        val intent = Intent(activity!!.applicationContext, DashBoardActivity::class.java)
+        val intent = if (UserPreference.getData(UserPreference.ROLE) == "Developer") {
+            Intent(activity!!.applicationContext, CompleteProfileActivity::class.java)
+        } else {
+            Intent(activity!!.applicationContext, DashBoardActivity::class.java)
+        }
         intent.flags = Intent.FLAG_ACTIVITY_CLEAR_TASK or Intent.FLAG_ACTIVITY_NEW_TASK
         startActivity(intent)
         activity!!.overridePendingTransition(android.R.anim.fade_in, android.R.anim.fade_out)
     }
 
-    private fun saveUserInformation(userID: String) {
+    private fun saveUserInformation(userID: String, role: String, emailAddress: String) {
         UserPreference.saveData(UserPreference.USER_ID, userID)
+        UserPreference.saveData(UserPreference.ROLE, role)
+        UserPreference.saveData(UserPreference.EMAIL_ADDRESS, emailAddress)
+
     }
 
     private fun parseSignUpResponse(response: String) {
         val signUpResponseModel = Gson().fromJson(response, SignUpResponseModel::class.java)
         if (signUpResponseModel.registered) {
+            saveUserInformation(signUpResponseModel.userID, role!!, emailAddress!!)
             openDashBoardActivity()
-            saveUserInformation(signUpResponseModel.userID)
         } else {
             Toast.makeText(activity, signUpResponseModel.status, Toast.LENGTH_LONG).show()
         }
@@ -164,5 +175,4 @@ class SignUpFragment : BaseFragment() {
         }
         return role
     }
-
 }

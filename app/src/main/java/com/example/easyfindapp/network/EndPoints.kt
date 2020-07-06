@@ -5,6 +5,7 @@ object EndPoints {
     const val SIGN_IN = "SignIn"
     const val USERS = "Users"
     const val COMPLETE_PROFILE = "CompleteProfile"
+    const val IS_USER_COMPLETED = "isusercomplete"
 
     const val HTTP_200_OK = 200
     const val HTTP_201_CREATED = 201
