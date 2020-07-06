@@ -20,6 +20,7 @@ import android.widget.Toast
 import androidx.core.app.ActivityCompat
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.bumptech.glide.Glide
+import com.example.easyfindapp.App
 import com.example.easyfindapp.R
 import com.example.easyfindapp.activities.AuthenticationActivity
 import com.example.easyfindapp.activities.DashBoardActivity
@@ -27,8 +28,10 @@ import com.example.easyfindapp.adapters.SkillsRecyclerAdapter
 import com.example.easyfindapp.fragments.BaseFragment
 import com.example.easyfindapp.tools.Tools
 import com.example.easyfindapp.user_preference.UserPreference
+import com.google.firebase.storage.FirebaseStorage
 import kotlinx.android.synthetic.main.activity_complete_profile.view.*
 import kotlinx.android.synthetic.main.fragment_complete_developer_profile.view.*
+import java.util.*
 
 class CompleteDeveloperProfileFragment : BaseFragment() {
     private var imageUri: Uri? = null
@@ -228,13 +231,31 @@ class CompleteDeveloperProfileFragment : BaseFragment() {
         if (requestCode == TAKE_IMAGE_FROM_CAMERA_REQUEST_CODE && resultCode == Activity.RESULT_OK) {
             if (imageUri != null) {
                 Glide.with(this).load(imageUri).into(itemView!!.selectProfileImageDeveloper)
+                saveimage(imageUri!!)
                 imagePictureSelected = true
             }
         } else if (requestCode == TAKE_IMAGE_FROM_GALLERY_REQUEST_CODE && resultCode == Activity.RESULT_OK) {
             Glide.with(this).load(data!!.data).into(itemView!!.selectProfileImageDeveloper)
+            saveimage(data?.data!!)
             imagePictureSelected = true
         }
         super.onActivityResult(requestCode, resultCode, data)
+    }
+
+    private fun saveimage(imageuri:Uri){
+        var downloadurl:String=""
+        val randomname:String= UUID.randomUUID().toString()
+        val ref= FirebaseStorage.getInstance().getReference("images/$randomname")
+        ref.putFile(imageuri!!).addOnSuccessListener {
+            Toast.makeText(App.appInstance?.applicationContext,"image was uploaded successfully", Toast.LENGTH_SHORT).show()
+            var downloadurl:String=""
+            //get image url
+            ref.downloadUrl.addOnSuccessListener {
+                downloadurl=it.toString()
+            }
+        }.addOnFailureListener(){
+            Toast.makeText(App.appInstance?.applicationContext,it.message, Toast.LENGTH_SHORT).show()
+        }
     }
 
     private fun checkReadExternalStoragePermission() = ActivityCompat.checkSelfPermission(
