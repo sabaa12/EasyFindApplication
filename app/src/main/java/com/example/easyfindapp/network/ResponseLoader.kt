@@ -1,6 +1,5 @@
 package com.example.easyfindapp.network
 
-import android.util.Log.d
 import android.view.View
 import com.example.easyfindapp.network.EndPoints.HTTP_200_OK
 import com.example.easyfindapp.network.EndPoints.HTTP_201_CREATED
@@ -9,6 +8,8 @@ import com.example.easyfindapp.network.EndPoints.HTTP_400_BAD_REQUEST
 import com.example.easyfindapp.network.EndPoints.HTTP_401_UNAUTHORIZED
 import com.example.easyfindapp.network.EndPoints.HTTP_404_NOT_FOUND
 import com.example.easyfindapp.network.EndPoints.HTTP_500_INTERNAL_SERVER_ERROR
+import com.google.gson.JsonObject
+import okhttp3.RequestBody
 import org.json.JSONException
 import org.json.JSONObject
 import retrofit2.Call
@@ -17,9 +18,15 @@ import retrofit2.Response
 
 object ResponseLoader {
 
-    fun isUserCompleteResponse(path : String, id : String, loaderView: View?, responseCallback: ResponseCallback) {
-        apiService.requestGetWithID(path,id).enqueue(callback(loaderView,responseCallback))
+    fun isUserCompleteResponse(
+        path: String,
+        id: String,
+        loaderView: View?,
+        responseCallback: ResponseCallback
+    ) {
+        apiService.requestGetWithID(path, id).enqueue(callback(loaderView, responseCallback))
     }
+
 
     fun getPostResponse(
         path: String,
@@ -76,9 +83,13 @@ object ResponseLoader {
     }
 
     private fun parseError(errorBody: String, responseCallback: ResponseCallback) {
-        val errorJson = JSONObject(errorBody)
-        if (errorJson.has("error")) {
-            responseCallback.onError(errorJson.getString("error"))
+        try {
+            val errorJson = JSONObject(errorBody)
+            if (errorJson.has("error")) {
+                responseCallback.onError(errorJson.getString("error"))
+            }
+        } catch (e : JSONException) {
+            e.printStackTrace()
         }
     }
 }

@@ -62,22 +62,25 @@
                 android:hint="@string/position" />
         </com.google.android.material.textfield.TextInputLayout>
 
-        <TextView
-            android:layout_marginTop="20dp"
+        <com.google.android.material.textfield.TextInputLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:gravity="center"
-            android:text="@string/select_age"
-            android:textColor="@color/colorPrimary"
-            android:textSize="20sp" />
+            android:layout_marginStart="36dp"
+            android:layout_marginTop="20dp"
+            android:layout_marginEnd="36dp"
+            android:theme="@style/InputFieldTextLabel">
 
-        <NumberPicker
-            android:id="@+id/selectAgeDeveloper"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_gravity="center" />
+            <EditText
+                android:inputType="number"
+                android:id="@+id/inputAgeDeveloper"
+                android:layout_width="match_parent"
+                android:layout_height="50dp"
+                android:hint="@string/age" />
+
+        </com.google.android.material.textfield.TextInputLayout>
 
         <TextView
+            android:layout_marginTop="20dp"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:gravity="center"
@@ -100,7 +103,7 @@
                 android:layout_height="wrap_content"
                 android:buttonTint="@color/colorPrimaryDark"
                 android:text="@string/male"
-                android:textColor="@color/colorRed"
+                android:textColor="@color/colorGreen"
                 android:textSize="20sp"
                 android:textStyle="bold" />
 
@@ -166,7 +169,7 @@
             android:textStyle="bold" />
 
         <Button
-            android:id="@+id/completeProfileBtn"
+            android:id="@+id/completeDeveloperProfileBtn"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="20dp"

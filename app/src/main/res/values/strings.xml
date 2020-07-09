@@ -16,7 +16,9 @@
     <string name="required_fields">Required Fields</string>
     <string name="fill_sign_in_required_fields">Please fill email address and password fields!</string>
     <string name="fill_sign_up_required_fields">Please fill email address,password and confirm password fields!</string>
-    <string name="fill_complete_profile_requred_fields">Please choose profile photo, fill username,position,age,gender fields! and select at least 1 skill!</string>
+    <string name="fill_complete_developers_profile_required_fields">Please choose profile photo, fill username,position,age,gender fields and select at least 1 skill!</string>
+    <string name="fill_complete_employer_person_profile_required_fields">Please choose profile photo, fill username,email address,gender,gender fields!</string>
+    <string name="fill_complete_employer_company_profile_required_fields">Please choose company logo, fill company name!</string>
     <string name="password_mismatch">Password Mismatch</string>
     <string name="match_password">Please write same passwords!</string>
     <string name="sign_out">Sign Out</string>
@@ -36,5 +38,9 @@
     <string name="complete_profile">Complete Profile</string>
     <string name="close">Close</string>
     <string name="choose">Choose</string>
+    <string name="person">Person</string>
+    <string name="company">Company</string>
+    <string name="company_name">Company name</string>
+    <string name="age">Age</string>
 
 </resources>

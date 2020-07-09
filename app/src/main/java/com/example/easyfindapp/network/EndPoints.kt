@@ -4,7 +4,9 @@ object EndPoints {
     const val SIGN_UP = "signUp"
     const val SIGN_IN = "SignIn"
     const val USERS = "Users"
-    const val COMPLETE_PROFILE = "CompleteProfile"
+    const val COMPLETE_PROFILE_DEVELOPERS = "СompleteProfileDeveloper"
+    const val COMPLETE_PROFILE_EMPLOYER_PERSON = "СompleteProfileEmployerPerson"
+    const val COMPLETE_PROFILE_EMPLOYER_COMPANY = "СompleteProfileEmployerCompany"
     const val IS_USER_COMPLETED = "isusercomplete"
 
     const val HTTP_200_OK = 200

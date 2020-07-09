@@ -3,7 +3,7 @@ package com.example.easyfindapp.network
 import retrofit2.Retrofit
 import retrofit2.converter.scalars.ScalarsConverterFactory
 
-private const val BASE_PATH = "http://apifinal.somee.com/api/"
+private const val BASE_PATH = "https://finalprojapi.herokuapp.com/api/"
 
 private val retrofit = Retrofit.Builder()
     .addConverterFactory(ScalarsConverterFactory.create())

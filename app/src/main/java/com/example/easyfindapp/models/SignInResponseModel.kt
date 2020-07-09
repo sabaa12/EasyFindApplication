@@ -4,7 +4,12 @@ import com.google.gson.annotations.SerializedName
 
 data class SignInResponseModel(
     @SerializedName("userID")
-    val userID : String,
+    val userID: String,
     @SerializedName("status")
-    val status : String
+    val status: Boolean,
+    @SerializedName("role")
+    val role: String,
+    @SerializedName("email_address")
+    val emailAddress: String
+
 )

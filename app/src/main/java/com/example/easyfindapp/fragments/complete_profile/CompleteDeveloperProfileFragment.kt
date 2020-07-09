@@ -6,40 +6,38 @@ import android.content.ContentValues
 import android.content.Intent
 import android.content.pm.PackageManager
 import android.net.Uri
-import android.opengl.Visibility
 import android.os.Build
 import android.os.Bundle
 import android.provider.MediaStore
 import android.view.LayoutInflater
-import android.view.View
 import android.view.ViewGroup
-import android.widget.HorizontalScrollView
-import android.widget.LinearLayout
-import android.widget.RadioGroup
 import android.widget.Toast
-import androidx.core.app.ActivityCompat
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.bumptech.glide.Glide
-import com.example.easyfindapp.App
-import com.example.easyfindapp.R
-import com.example.easyfindapp.activities.AuthenticationActivity
+import com.example.easyfindapp.*
 import com.example.easyfindapp.activities.DashBoardActivity
 import com.example.easyfindapp.adapters.SkillsRecyclerAdapter
+import com.example.easyfindapp.extensions.setImage
 import com.example.easyfindapp.fragments.BaseFragment
+import com.example.easyfindapp.models.CompleteProfileModel
+import com.example.easyfindapp.network.EndPoints
+import com.example.easyfindapp.network.ResponseCallback
+import com.example.easyfindapp.network.ResponseLoader
 import com.example.easyfindapp.tools.Tools
 import com.example.easyfindapp.user_preference.UserPreference
+import com.example.easyfindapp.utils.*
 import com.google.firebase.storage.FirebaseStorage
-import kotlinx.android.synthetic.main.activity_complete_profile.view.*
+import com.google.gson.Gson
 import kotlinx.android.synthetic.main.fragment_complete_developer_profile.view.*
+import kotlinx.android.synthetic.main.loader_layout.*
 import java.util.*
 
 class CompleteDeveloperProfileFragment : BaseFragment() {
     private var imageUri: Uri? = null
     private lateinit var skillsRecyclerAdapter: SkillsRecyclerAdapter
     private val skills: MutableList<String> = mutableListOf()
-    private var age: Int? = null
     private var gender: String? = null
-    private var imagePictureSelected: Boolean = false
+    private var uploadedImage: String? = null
     override fun getFragmentLayout() = R.layout.fragment_complete_developer_profile
 
     override fun startFragmentConfiguration(
@@ -52,8 +50,6 @@ class CompleteDeveloperProfileFragment : BaseFragment() {
 
     private fun init() {
         selectGender()
-        selectAge()
-        selectProfileImage()
         displayCompletedFields()
         clickListeners()
         manageSkillRecyclerView()
@@ -64,25 +60,83 @@ class CompleteDeveloperProfileFragment : BaseFragment() {
             getSkillValue()
         }
 
-        itemView!!.completeProfileBtn.setOnClickListener {
+        itemView!!.completeDeveloperProfileBtn.setOnClickListener {
             checkEmptyFields()
+        }
+
+        itemView!!.selectProfileImageDeveloper.setOnClickListener {
+            checkPermissions()
         }
     }
 
     private fun checkEmptyFields() {
         val userName = itemView!!.inputUserNameDeveloper
         val position = itemView!!.inputPosition
-        if (userName.text.isEmpty() || position.text.isEmpty() || age == null || gender == null || !imagePictureSelected || skills.size == 0) {
+        val age = itemView!!.inputAgeDeveloper
+        if (userName.text.isEmpty() || position.text.isEmpty() || age.text.isEmpty() || gender == null || uploadedImage == null || skills.size == 0) {
             Tools.errorDialog(
                 activity!!,
                 resources.getString(R.string.required_fields),
-                resources.getString(R.string.fill_complete_profile_requred_fields),
+                resources.getString(R.string.fill_complete_developers_profile_required_fields),
                 resources.getString(R.string.try_again)
             )
         } else {
-            Toast.makeText(activity!!, "Profile Completed", Toast.LENGTH_LONG).show()
-            openDashBoard()
+            requestCompleteDeveloperProfile(
+                userName.text.toString(),
+                itemView!!.emailAddressDeveloperView.text.toString(),
+                age.text.toString(),
+                gender.toString(),
+                position.text.toString(),
+                uploadedImage!!,
+                UserPreference.getData(UserPreference.ROLE)!!,
+                skills
+            )
         }
+    }
+
+    private fun requestCompleteDeveloperProfile(
+        userName: String,
+        emailAddress: String,
+        age: String,
+        gender: String,
+        position: String,
+        profileImageUrl: String,
+        role: String,
+        skills: MutableList<String>
+
+    ) {
+        val completeProfileModel = CompleteProfileModel(
+            userName,
+            emailAddress,
+            age,
+            gender,
+            position,
+            profileImageUrl,
+            skills,
+            role
+        )
+
+        val stringJson = Gson().toJson(completeProfileModel)
+        val parameters = mutableMapOf<String, String>()
+        parameters["json"] = stringJson
+        ResponseLoader.getPostResponse(
+            EndPoints.COMPLETE_PROFILE_DEVELOPERS,
+            parameters,
+            spinLoaderView,
+            object : ResponseCallback {
+                override fun onSuccess(response: String) {
+                    openDashBoard()
+                }
+
+                override fun onFailure(response: String) {
+                    Toast.makeText(activity!!, response, Toast.LENGTH_LONG).show()
+                }
+
+                override fun onError(response: String) {
+                    Toast.makeText(activity!!, response, Toast.LENGTH_LONG).show()
+                }
+
+            })
     }
 
     private fun openDashBoard() {
@@ -102,25 +156,12 @@ class CompleteDeveloperProfileFragment : BaseFragment() {
         }
     }
 
-    private fun selectProfileImage() {
-        itemView!!.selectProfileImageDeveloper.setOnClickListener {
-            checkPermissions()
-        }
-    }
-
-    private fun selectAge() {
-        itemView!!.selectAgeDeveloper.minValue = 15
-        itemView!!.selectAgeDeveloper.maxValue = 100
-        itemView!!.selectAgeDeveloper.setOnValueChangedListener { _, _, newVal ->
-            age = newVal
-        }
-    }
 
     private fun selectGender() {
         itemView!!.selectUserGender.setOnCheckedChangeListener { _, checkedId ->
             when (checkedId) {
-                R.id.genderMale -> gender = "Male"
-                R.id.genderFemale -> gender = "Female"
+                R.id.genderMale -> gender = MALE
+                R.id.genderFemale -> gender = FEMALE
             }
         }
     }
@@ -128,8 +169,21 @@ class CompleteDeveloperProfileFragment : BaseFragment() {
     @SuppressLint("ObsoleteSdkInt")
     private fun checkPermissions() {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-            if (!(checkReadExternalStoragePermission() && checkWriteExternalStoragePermission() && checkCameraPermission())) {
-                requestPermissions()
+            if (!(checkReadExternalStoragePermission(
+                    activity!!.applicationContext
+                ) && checkWriteExternalStoragePermission(
+                    activity!!.applicationContext
+                ) && checkCameraPermission(
+                    activity!!.applicationContext
+                ))
+            ) {
+                requestPermissions(
+                    arrayOf(
+                        android.Manifest.permission.READ_EXTERNAL_STORAGE,
+                        android.Manifest.permission.WRITE_EXTERNAL_STORAGE,
+                        android.Manifest.permission.CAMERA
+                    ), PERMISSION_REQUEST_CODE
+                )
             } else {
                 imageUploadChooser()
             }
@@ -203,17 +257,6 @@ class CompleteDeveloperProfileFragment : BaseFragment() {
         startActivityForResult(camera, TAKE_IMAGE_FROM_CAMERA_REQUEST_CODE)
     }
 
-    private fun requestPermissions() {
-        requestPermissions(
-            arrayOf(
-                android.Manifest.permission.READ_EXTERNAL_STORAGE,
-                android.Manifest.permission.WRITE_EXTERNAL_STORAGE,
-                android.Manifest.permission.CAMERA
-            ),
-            PERMISSION_REQUEST_CODE
-        )
-    }
-
     private fun manageSkillRecyclerView() {
         itemView!!.skillsRecyclerView.layoutManager =
             LinearLayoutManager(
@@ -230,53 +273,34 @@ class CompleteDeveloperProfileFragment : BaseFragment() {
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         if (requestCode == TAKE_IMAGE_FROM_CAMERA_REQUEST_CODE && resultCode == Activity.RESULT_OK) {
             if (imageUri != null) {
-                Glide.with(this).load(imageUri).into(itemView!!.selectProfileImageDeveloper)
-                saveimage(imageUri!!)
-                imagePictureSelected = true
+                itemView!!.selectProfileImageDeveloper.setImage(imageUri!!)
+                saveImage(imageUri!!)
             }
         } else if (requestCode == TAKE_IMAGE_FROM_GALLERY_REQUEST_CODE && resultCode == Activity.RESULT_OK) {
-            Glide.with(this).load(data!!.data).into(itemView!!.selectProfileImageDeveloper)
-            saveimage(data?.data!!)
-            imagePictureSelected = true
+            if (data!!.data != null) {
+                itemView!!.selectProfileImageDeveloper.setImage(data.data!!)
+                saveImage(data.data!!)
+            }
         }
         super.onActivityResult(requestCode, resultCode, data)
     }
 
-    private fun saveimage(imageuri:Uri){
-        var downloadurl:String=""
-        val randomname:String= UUID.randomUUID().toString()
-        val ref= FirebaseStorage.getInstance().getReference("images/$randomname")
-        ref.putFile(imageuri!!).addOnSuccessListener {
-            Toast.makeText(App.appInstance?.applicationContext,"image was uploaded successfully", Toast.LENGTH_SHORT).show()
-            var downloadurl:String=""
-            //get image url
+    private fun saveImage(imageUri: Uri) {
+        val randomName: String = UUID.randomUUID().toString()
+        val ref = FirebaseStorage.getInstance().getReference("images/$randomName")
+        ref.putFile(imageUri).addOnSuccessListener {
+            Toast.makeText(
+                App.appInstance?.applicationContext,
+                "image was uploaded successfully",
+                Toast.LENGTH_SHORT
+            ).show()
             ref.downloadUrl.addOnSuccessListener {
-                downloadurl=it.toString()
+                uploadedImage = it.toString()
+
             }
-        }.addOnFailureListener(){
-            Toast.makeText(App.appInstance?.applicationContext,it.message, Toast.LENGTH_SHORT).show()
+        }.addOnFailureListener {
+            Toast.makeText(App.appInstance?.applicationContext, it.message, Toast.LENGTH_SHORT)
+                .show()
         }
-    }
-
-    private fun checkReadExternalStoragePermission() = ActivityCompat.checkSelfPermission(
-        activity!!.applicationContext,
-        android.Manifest.permission.READ_EXTERNAL_STORAGE
-    ) == PackageManager.PERMISSION_GRANTED
-
-    private fun checkWriteExternalStoragePermission() = ActivityCompat.checkSelfPermission(
-        activity!!.applicationContext,
-        android.Manifest.permission.WRITE_EXTERNAL_STORAGE
-    ) == PackageManager.PERMISSION_GRANTED
-
-    private fun checkCameraPermission() = ActivityCompat.checkSelfPermission(
-        activity!!.applicationContext,
-        android.Manifest.permission.CAMERA
-    ) == PackageManager.PERMISSION_GRANTED
-
-
-    companion object {
-        const val PERMISSION_REQUEST_CODE = 10
-        const val TAKE_IMAGE_FROM_GALLERY_REQUEST_CODE = 20
-        const val TAKE_IMAGE_FROM_CAMERA_REQUEST_CODE = 30
     }
 }

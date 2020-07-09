@@ -1,12 +1,10 @@
 package com.example.easyfindapp.fragments.authentication
 
-import android.content.Intent
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import android.widget.Toast
 import com.example.easyfindapp.R
-import com.example.easyfindapp.activities.DashBoardActivity
 import com.example.easyfindapp.extensions.emailValidation
 import com.example.easyfindapp.fragments.BaseFragment
 import com.example.easyfindapp.models.SignInResponseModel
@@ -14,7 +12,8 @@ import com.example.easyfindapp.network.EndPoints
 import com.example.easyfindapp.network.ResponseCallback
 import com.example.easyfindapp.network.ResponseLoader
 import com.example.easyfindapp.tools.Tools
-import com.example.easyfindapp.user_preference.UserPreference
+import com.example.easyfindapp.tools.Tools.saveUserInformation
+import com.example.easyfindapp.utils.checkUserIsCompleted
 import com.google.gson.Gson
 import kotlinx.android.synthetic.main.fragment_sign_in.view.*
 import kotlinx.android.synthetic.main.fragment_sign_in.view.inputEmailAddressSignIn
@@ -111,21 +110,13 @@ class SignInFragment : BaseFragment() {
 
     private fun parserSignInResponse(response: String) {
         val signInResponseModel = Gson().fromJson(response, SignInResponseModel::class.java)
-        if (signInResponseModel.status == "ok") {
-            openDashBoardActivity()
-            saveUserInformation(signInResponseModel.userID)
+        if (signInResponseModel.status) {
+            saveUserInformation(
+                signInResponseModel.userID,
+                signInResponseModel.role,
+                signInResponseModel.emailAddress
+            )
+            checkUserIsCompleted(signInResponseModel.userID, activity!!)
         }
     }
-
-    private fun saveUserInformation(userID: String) {
-        UserPreference.saveData(UserPreference.USER_ID, userID)
-    }
-
-    private fun openDashBoardActivity() {
-        val intent = Intent(activity!!.applicationContext, DashBoardActivity::class.java)
-        intent.flags = Intent.FLAG_ACTIVITY_CLEAR_TASK or Intent.FLAG_ACTIVITY_NEW_TASK
-        startActivity(intent)
-        activity!!.overridePendingTransition(android.R.anim.fade_in, android.R.anim.fade_out)
-    }
-
 }

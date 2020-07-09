@@ -95,7 +95,7 @@
                 android:layout_height="wrap_content"
                 android:buttonTint="@color/colorPrimaryDark"
                 android:text="@string/employer"
-                android:textColor="@color/colorRed"
+                android:textColor="@color/colorGreen"
                 android:textSize="20sp"
                 android:textStyle="bold" />
 

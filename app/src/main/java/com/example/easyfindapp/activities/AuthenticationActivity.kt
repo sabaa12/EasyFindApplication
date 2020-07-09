@@ -2,23 +2,25 @@ package com.example.easyfindapp.activities
 
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import androidx.fragment.app.Fragment
 import com.example.easyfindapp.R
 import com.example.easyfindapp.fragments.authentication.SignUpFragment
-import com.example.easyfindapp.network.ResponseCallback
-import com.example.easyfindapp.network.ResponseLoader
 
 class AuthenticationActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_authentication)
-        openSignUpFragment()
+        openAuthenticationFragment(SignUpFragment(), R.id.authenticationContainer, "SignUpFragment")
     }
 
-    private fun openSignUpFragment() {
+
+    private fun openAuthenticationFragment(fragment: Fragment, container: Int, tag: String) {
         val transaction = supportFragmentManager.beginTransaction()
-        transaction.replace(R.id.authenticationContainer,
-            SignUpFragment(), "SignUpFragment")
+        transaction.replace(
+            container,
+            fragment,
+            tag
+        )
         transaction.commit()
     }
-
 }

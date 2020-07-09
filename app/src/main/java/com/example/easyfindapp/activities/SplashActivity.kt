@@ -4,18 +4,9 @@ import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.os.Handler
-import android.util.Log
-import android.util.Log.d
-import android.widget.Toast
-import com.example.easyfindapp.App
 import com.example.easyfindapp.R
-import com.example.easyfindapp.network.EndPoints
-import com.example.easyfindapp.network.ResponseCallback
-import com.example.easyfindapp.network.ResponseLoader
 import com.example.easyfindapp.user_preference.UserPreference
-import com.google.gson.JsonObject
-import kotlinx.android.synthetic.main.loader_layout.*
-import org.json.JSONObject
+import com.example.easyfindapp.utils.checkUserIsCompleted
 
 class SplashActivity : AppCompatActivity() {
     private lateinit var handler: Handler
@@ -55,48 +46,7 @@ class SplashActivity : AppCompatActivity() {
         if (UserPreference.getData(UserPreference.USER_ID)!!.isEmpty()) {
             openAuthenticationActivity()
         } else {
-            checkUserIsCompleted(UserPreference.getData(UserPreference.USER_ID)!!)
+            checkUserIsCompleted(UserPreference.getData(UserPreference.USER_ID)!!, this)
         }
-    }
-
-    private fun checkUserIsCompleted(id: String) {
-        ResponseLoader.isUserCompleteResponse(
-            EndPoints.IS_USER_COMPLETED,
-            id,
-            null,
-            object : ResponseCallback {
-                override fun onSuccess(response: String) {
-                    val jsonResponse = JSONObject(response)
-                    if (jsonResponse.has("iscompleted")) {
-                        val intent: Intent =
-                            if (jsonResponse.get("iscompleted") == false && UserPreference.getData(
-                                    UserPreference.ROLE
-                                ) == "Developer"
-                            ) {
-                                Intent(
-                                    App.appInstance!!.applicationContext,
-                                    CompleteProfileActivity::class.java
-                                )
-                            } else {
-                                Intent(
-                                    App.appInstance!!.applicationContext,
-                                    DashBoardActivity::class.java
-                                )
-                            }
-                        intent.flags =
-                            Intent.FLAG_ACTIVITY_CLEAR_TASK or Intent.FLAG_ACTIVITY_NEW_TASK
-                        startActivity(intent)
-                        overridePendingTransition(android.R.anim.fade_in, android.R.anim.fade_out)
-                    }
-                }
-
-                override fun onFailure(response: String) {
-                    Toast.makeText(this@SplashActivity, response, Toast.LENGTH_LONG).show()
-                }
-
-                override fun onError(response: String) {
-                    Toast.makeText(this@SplashActivity, response, Toast.LENGTH_LONG).show()
-                }
-            })
     }
 }

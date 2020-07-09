@@ -15,7 +15,10 @@ import com.example.easyfindapp.network.EndPoints
 import com.example.easyfindapp.network.ResponseCallback
 import com.example.easyfindapp.network.ResponseLoader
 import com.example.easyfindapp.tools.Tools
+import com.example.easyfindapp.tools.Tools.saveUserInformation
 import com.example.easyfindapp.user_preference.UserPreference
+import com.example.easyfindapp.utils.DEVELOPER
+import com.example.easyfindapp.utils.EMPLOYER
 import com.google.gson.Gson
 import kotlinx.android.synthetic.main.fragment_sign_up.*
 import kotlinx.android.synthetic.main.fragment_sign_up.view.*
@@ -135,7 +138,7 @@ class SignUpFragment : BaseFragment() {
     }
 
     private fun openDashBoardActivity() {
-        val intent = if (UserPreference.getData(UserPreference.ROLE) == "Developer") {
+        val intent = if (UserPreference.getData(UserPreference.ROLE)!!.isNotEmpty()) {
             Intent(activity!!.applicationContext, CompleteProfileActivity::class.java)
         } else {
             Intent(activity!!.applicationContext, DashBoardActivity::class.java)
@@ -143,13 +146,6 @@ class SignUpFragment : BaseFragment() {
         intent.flags = Intent.FLAG_ACTIVITY_CLEAR_TASK or Intent.FLAG_ACTIVITY_NEW_TASK
         startActivity(intent)
         activity!!.overridePendingTransition(android.R.anim.fade_in, android.R.anim.fade_out)
-    }
-
-    private fun saveUserInformation(userID: String, role: String, emailAddress: String) {
-        UserPreference.saveData(UserPreference.USER_ID, userID)
-        UserPreference.saveData(UserPreference.ROLE, role)
-        UserPreference.saveData(UserPreference.EMAIL_ADDRESS, emailAddress)
-
     }
 
     private fun parseSignUpResponse(response: String) {
@@ -166,10 +162,10 @@ class SignUpFragment : BaseFragment() {
         itemView!!.selectUserRole.setOnCheckedChangeListener { _, checkedId ->
             when (checkedId) {
                 R.id.employerPosition -> {
-                    role = "Employer"
+                    role = EMPLOYER
                 }
                 R.id.developerPosition -> {
-                    role = "Developer"
+                    role = DEVELOPER
                 }
             }
         }
