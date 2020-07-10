@@ -13,9 +13,8 @@ import android.view.LayoutInflater
 import android.view.ViewGroup
 import android.widget.Toast
 import androidx.recyclerview.widget.LinearLayoutManager
-import com.bumptech.glide.Glide
 import com.example.easyfindapp.*
-import com.example.easyfindapp.activities.DashBoardActivity
+import com.example.easyfindapp.activities.HomeActivity
 import com.example.easyfindapp.adapters.SkillsRecyclerAdapter
 import com.example.easyfindapp.extensions.setImage
 import com.example.easyfindapp.fragments.BaseFragment
@@ -140,7 +139,7 @@ class CompleteDeveloperProfileFragment : BaseFragment() {
     }
 
     private fun openDashBoard() {
-        val intent = Intent(activity!!, DashBoardActivity::class.java)
+        val intent = Intent(activity!!, HomeActivity::class.java)
         intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK or Intent.FLAG_ACTIVITY_NEW_TASK)
         startActivity(intent)
         activity!!.overridePendingTransition(android.R.anim.fade_in, android.R.anim.fade_out)

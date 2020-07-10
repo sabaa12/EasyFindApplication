@@ -1,25 +1,14 @@
 package com.example.easyfindapp.tools
 
-import android.app.Activity
 import android.app.Dialog
 import android.content.Context
-import android.content.Intent
 import android.util.Patterns
 import android.view.ViewGroup
-import android.widget.Toast
-import androidx.core.content.ContextCompat.startActivity
-import com.example.easyfindapp.App
 import com.example.easyfindapp.R
-import com.example.easyfindapp.activities.CompleteProfileActivity
-import com.example.easyfindapp.activities.DashBoardActivity
-import com.example.easyfindapp.network.EndPoints
-import com.example.easyfindapp.network.ResponseCallback
-import com.example.easyfindapp.network.ResponseLoader
 import com.example.easyfindapp.user_preference.UserPreference
 import kotlinx.android.synthetic.main.error_dialog_layout.*
 import kotlinx.android.synthetic.main.error_dialog_layout.closeDialogView
 import kotlinx.android.synthetic.main.image_uploader_chooser.*
-import org.json.JSONObject
 
 object Tools {
     fun emailIsValid(text: String) = Patterns.EMAIL_ADDRESS.matcher(text).matches()
@@ -74,6 +63,4 @@ object Tools {
         UserPreference.saveData(UserPreference.ROLE, role)
         UserPreference.saveData(UserPreference.EMAIL_ADDRESS, emailAddress)
     }
-
-
 }

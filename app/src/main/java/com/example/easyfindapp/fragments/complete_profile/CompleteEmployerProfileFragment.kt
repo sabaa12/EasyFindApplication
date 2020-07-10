@@ -17,7 +17,7 @@ import android.widget.ArrayAdapter
 import android.widget.Toast
 import com.example.easyfindapp.App
 import com.example.easyfindapp.R
-import com.example.easyfindapp.activities.DashBoardActivity
+import com.example.easyfindapp.activities.HomeActivity
 import com.example.easyfindapp.extensions.setImage
 import com.example.easyfindapp.fragments.BaseFragment
 import com.example.easyfindapp.tools.Tools
@@ -221,7 +221,7 @@ class CompleteEmployerProfileFragment : BaseFragment() {
     }
 
     private fun openDashBoard() {
-        val intent = Intent(activity!!, DashBoardActivity::class.java)
+        val intent = Intent(activity!!, HomeActivity::class.java)
         intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK or Intent.FLAG_ACTIVITY_NEW_TASK)
         startActivity(intent)
         activity!!.overridePendingTransition(android.R.anim.fade_in, android.R.anim.fade_out)

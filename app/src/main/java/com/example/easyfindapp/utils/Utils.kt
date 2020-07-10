@@ -6,7 +6,7 @@ import android.widget.Toast
 import androidx.core.content.ContextCompat
 import com.example.easyfindapp.App
 import com.example.easyfindapp.activities.CompleteProfileActivity
-import com.example.easyfindapp.activities.DashBoardActivity
+import com.example.easyfindapp.activities.HomeActivity
 import com.example.easyfindapp.network.EndPoints
 import com.example.easyfindapp.network.ResponseCallback
 import com.example.easyfindapp.network.ResponseLoader
@@ -31,7 +31,7 @@ fun checkUserIsCompleted(id: String, activity: Activity) {
                         } else {
                             Intent(
                                 App.appInstance!!.applicationContext,
-                                DashBoardActivity::class.java
+                                HomeActivity::class.java
                             )
                         }
                     intent.flags =

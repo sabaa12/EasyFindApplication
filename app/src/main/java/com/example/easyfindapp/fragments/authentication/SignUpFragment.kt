@@ -7,7 +7,7 @@ import android.view.ViewGroup
 import android.widget.Toast
 import com.example.easyfindapp.R
 import com.example.easyfindapp.activities.CompleteProfileActivity
-import com.example.easyfindapp.activities.DashBoardActivity
+import com.example.easyfindapp.activities.HomeActivity
 import com.example.easyfindapp.extensions.emailValidation
 import com.example.easyfindapp.fragments.BaseFragment
 import com.example.easyfindapp.models.SignUpResponseModel
@@ -141,7 +141,7 @@ class SignUpFragment : BaseFragment() {
         val intent = if (UserPreference.getData(UserPreference.ROLE)!!.isNotEmpty()) {
             Intent(activity!!.applicationContext, CompleteProfileActivity::class.java)
         } else {
-            Intent(activity!!.applicationContext, DashBoardActivity::class.java)
+            Intent(activity!!.applicationContext, HomeActivity::class.java)
         }
         intent.flags = Intent.FLAG_ACTIVITY_CLEAR_TASK or Intent.FLAG_ACTIVITY_NEW_TASK
         startActivity(intent)

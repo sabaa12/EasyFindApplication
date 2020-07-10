@@ -42,5 +42,9 @@
     <string name="company">Company</string>
     <string name="company_name">Company name</string>
     <string name="age">Age</string>
+    <string name="dashboard">DashBoard</string>
+    <string name="messages">Messages</string>
+    <string name="favourites">Favourites</string>
+    <string name="profile">Profile</string>
 
 </resources>
