@@ -14,6 +14,7 @@ import com.example.easyfindapp.R
 import com.example.easyfindapp.adapters.SkillsRecyclerAdapter
 import com.example.easyfindapp.extensions.setImage
 import com.example.easyfindapp.fragments.BaseFragment
+import com.example.easyfindapp.fragments.FullScreenImageFragment
 import com.example.easyfindapp.models.DeveloperUserModel
 import com.example.easyfindapp.models.EmployerCompanyModel
 import com.example.easyfindapp.models.EmployerPersonUserModel
@@ -31,6 +32,7 @@ import kotlinx.android.synthetic.main.fragment_profile.view.*
 class ProfileFragment : BaseFragment() {
     private val userRole = UserPreference.getData(UserPreference.ROLE)
     private val employerType = UserPreference.getData(UserPreference.EMPLOYER_TYPE)
+    private var imageUrl: String? = null
     override fun getFragmentLayout() = R.layout.fragment_profile
 
     override fun startFragmentConfiguration(
@@ -43,6 +45,13 @@ class ProfileFragment : BaseFragment() {
 
     private fun init() {
         getUserProfile()
+        clickListeners()
+    }
+
+    private fun clickListeners() {
+        itemView!!.userProfileImage.setOnClickListener {
+            openFullScreenImage()
+        }
     }
 
     private fun getUserProfile() {
@@ -52,7 +61,7 @@ class ProfileFragment : BaseFragment() {
             getUserProfileResponse(EndPoints.GET_EMPLOYER_USER_PERSON)
         } else if (userRole == EMPLOYER && employerType == COMPANY) {
             getUserProfileResponse(EndPoints.GET_EMPLOYER_USER_COMPANY)
-        } 
+        }
     }
 
     private fun getUserProfileResponse(path: String) {
@@ -93,6 +102,7 @@ class ProfileFragment : BaseFragment() {
         developerUserModel: DeveloperUserModel
     ) {
         itemView!!.userDeveloperGroup.visibility = View.VISIBLE
+        imageUrl = developerUserModel.photoUrl
         itemView!!.userRoleView.text = developerUserModel.role
         itemView!!.userProfileImage.setImage(Uri.parse(developerUserModel.photoUrl))
         itemView!!.userUserNameView.text = "Username: ${developerUserModel.userName}"
@@ -112,6 +122,7 @@ class ProfileFragment : BaseFragment() {
     @SuppressLint("SetTextI18n")
     private fun displayEmployerPersonProfile(employerPersonUserModel: EmployerPersonUserModel) {
         itemView!!.userPersonGroup.visibility = View.VISIBLE
+        imageUrl = employerPersonUserModel.photoUrl
 
         itemView!!.userRoleView.text = employerPersonUserModel.role
         itemView!!.userProfileImage.setImage(Uri.parse(employerPersonUserModel.photoUrl))
@@ -127,11 +138,22 @@ class ProfileFragment : BaseFragment() {
     @SuppressLint("SetTextI18n")
     private fun displayEmployerCompanyProfile(employerCompanyModel: EmployerCompanyModel) {
         itemView!!.userRoleView.text = userRole
+        imageUrl = employerCompanyModel.companyLogo
         itemView!!.userProfileImage.setImage(Uri.parse(employerCompanyModel.companyLogo))
         itemView!!.userUserNameView.text = "Company name: ${employerCompanyModel.companyName}"
         itemView!!.userEmailAddressView.text =
             "Email Address: ${UserPreference.getData(UserPreference.EMAIL_ADDRESS)}"
         itemView!!.userPositionView.text =
             "Employer Type: ${UserPreference.getData(UserPreference.EMPLOYER_TYPE)}"
+    }
+
+    private fun openFullScreenImage() {
+        val transaction = requireActivity().supportFragmentManager.beginTransaction()
+        transaction.replace(
+            R.id.fullScreenImageContainer,
+            FullScreenImageFragment.fullScreenImageFragmentInstance(imageUrl!!)
+        )
+        transaction.addToBackStack("FullScreenImageFragment")
+        transaction.commit()
     }
 }
