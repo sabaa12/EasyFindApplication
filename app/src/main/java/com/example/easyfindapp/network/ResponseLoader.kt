@@ -18,7 +18,7 @@ import retrofit2.Response
 
 object ResponseLoader {
 
-    fun isUserCompleteResponse(
+    fun getResponseWithID(
         path: String,
         id: String,
         loaderView: View?,

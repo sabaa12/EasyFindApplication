@@ -13,6 +13,7 @@ import com.example.easyfindapp.network.ResponseCallback
 import com.example.easyfindapp.network.ResponseLoader
 import com.example.easyfindapp.tools.Tools
 import com.example.easyfindapp.tools.Tools.saveUserInformation
+import com.example.easyfindapp.user_preference.UserPreference
 import com.example.easyfindapp.utils.checkUserIsCompleted
 import com.google.gson.Gson
 import kotlinx.android.synthetic.main.fragment_sign_in.view.*
@@ -56,14 +57,14 @@ class SignInFragment : BaseFragment() {
         if (itemView!!.inputEmailAddressSignIn.text.isEmpty() || itemView!!.inputPasswordSignIn.text.isEmpty()
         ) {
             Tools.errorDialog(
-                activity!!,
+                requireActivity(),
                 resources.getString(R.string.required_fields),
                 resources.getString(R.string.fill_sign_in_required_fields),
                 resources.getString(R.string.try_again)
             )
         } else if (!emailValid) {
             Tools.errorDialog(
-                activity!!,
+                requireActivity(),
                 resources.getString(R.string.input_field_validation),
                 resources.getString(R.string.fill_valid_email),
                 resources.getString(R.string.try_again)
@@ -111,12 +112,18 @@ class SignInFragment : BaseFragment() {
     private fun parserSignInResponse(response: String) {
         val signInResponseModel = Gson().fromJson(response, SignInResponseModel::class.java)
         if (signInResponseModel.status) {
+            if (signInResponseModel.employerType != null) {
+                UserPreference.saveData(
+                    UserPreference.EMPLOYER_TYPE,
+                    signInResponseModel.employerType
+                )
+            }
             saveUserInformation(
                 signInResponseModel.userID,
                 signInResponseModel.role,
                 signInResponseModel.emailAddress
             )
-            checkUserIsCompleted(signInResponseModel.userID, activity!!)
+            checkUserIsCompleted(signInResponseModel.userID, requireActivity())
         }
     }
 }

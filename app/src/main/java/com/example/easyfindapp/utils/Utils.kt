@@ -14,7 +14,7 @@ import org.json.JSONObject
 
 
 fun checkUserIsCompleted(id: String, activity: Activity) {
-    ResponseLoader.isUserCompleteResponse(
+    ResponseLoader.getResponseWithID(
         EndPoints.IS_USER_COMPLETED,
         id,
         null,

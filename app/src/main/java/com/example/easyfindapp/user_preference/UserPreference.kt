@@ -7,6 +7,7 @@ object UserPreference {
     const val USER_ID = "User ID"
     const val ROLE = "Role"
     const val EMAIL_ADDRESS = "Email Address"
+    const val EMPLOYER_TYPE = "Employer Type"
 
     private val preference by lazy {
         App.appInstance!!.applicationContext.getSharedPreferences("User",Context.MODE_PRIVATE)

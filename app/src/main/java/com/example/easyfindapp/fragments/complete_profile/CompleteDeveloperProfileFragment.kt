@@ -139,15 +139,15 @@ class CompleteDeveloperProfileFragment : BaseFragment() {
     }
 
     private fun openDashBoard() {
-        val intent = Intent(activity!!, HomeActivity::class.java)
+        val intent = Intent(requireActivity(), HomeActivity::class.java)
         intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK or Intent.FLAG_ACTIVITY_NEW_TASK)
         startActivity(intent)
-        activity!!.overridePendingTransition(android.R.anim.fade_in, android.R.anim.fade_out)
+        requireActivity().overridePendingTransition(android.R.anim.fade_in, android.R.anim.fade_out)
     }
 
     private fun getSkillValue() {
         if (itemView!!.inputAddSkillsField.text.isEmpty()) {
-            Toast.makeText(activity!!, "Fill this field to add new skill", Toast.LENGTH_LONG).show()
+            Toast.makeText(requireActivity(), "Fill this field to add new skill", Toast.LENGTH_LONG).show()
         } else {
             skills.add(itemView!!.inputAddSkillsField.text.toString())
             itemView!!.inputAddSkillsField.text.clear()
@@ -169,11 +169,11 @@ class CompleteDeveloperProfileFragment : BaseFragment() {
     private fun checkPermissions() {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
             if (!(checkReadExternalStoragePermission(
-                    activity!!.applicationContext
+                    requireActivity().applicationContext
                 ) && checkWriteExternalStoragePermission(
-                    activity!!.applicationContext
+                    requireActivity().applicationContext
                 ) && checkCameraPermission(
-                    activity!!.applicationContext
+                    requireActivity().applicationContext
                 ))
             ) {
                 requestPermissions(
@@ -215,7 +215,7 @@ class CompleteDeveloperProfileFragment : BaseFragment() {
 
     private fun imageUploadChooser() {
         Tools.uploadImageChooser(
-            activity!!,
+            requireActivity(),
             resources.getString(R.string.choose),
             resources.getString(R.string.close)
         ) {
@@ -234,7 +234,7 @@ class CompleteDeveloperProfileFragment : BaseFragment() {
     private fun displayCompletedFields() {
         itemView!!.emailAddressDeveloperView.text =
             UserPreference.getData(UserPreference.EMAIL_ADDRESS)
-        itemView!!.userRoleViw.text = "Role: ${UserPreference.getData(UserPreference.ROLE)}"
+        itemView!!.userRoleTextView.text = "Role: ${UserPreference.getData(UserPreference.ROLE)}"
     }
 
     private fun takeImageFromGallery() {
@@ -247,7 +247,7 @@ class CompleteDeveloperProfileFragment : BaseFragment() {
         val values = ContentValues()
         values.put(MediaStore.Images.Media.TITLE, "New picture")
         values.put(MediaStore.Images.Media.DESCRIPTION, "Picture from Camera")
-        imageUri = activity!!.contentResolver.insert(
+        imageUri = requireActivity().contentResolver.insert(
             MediaStore.Images.Media.EXTERNAL_CONTENT_URI, values
         )
 
@@ -259,7 +259,7 @@ class CompleteDeveloperProfileFragment : BaseFragment() {
     private fun manageSkillRecyclerView() {
         itemView!!.skillsRecyclerView.layoutManager =
             LinearLayoutManager(
-                activity!!.applicationContext,
+                requireActivity().applicationContext,
                 LinearLayoutManager.HORIZONTAL,
                 false
             )

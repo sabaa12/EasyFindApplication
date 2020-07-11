@@ -1,6 +1,7 @@
 package com.example.easyfindapp.activities
 
 import android.os.Bundle
+import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.viewpager.widget.ViewPager
 import com.example.easyfindapp.R
@@ -9,6 +10,7 @@ import com.example.easyfindapp.fragments.home.DashboardFragment
 import com.example.easyfindapp.fragments.home.FavouritesFragment
 import com.example.easyfindapp.fragments.home.MessagesFragment
 import com.example.easyfindapp.fragments.home.ProfileFragment
+import com.example.easyfindapp.user_preference.UserPreference
 import kotlinx.android.synthetic.main.activity_home.*
 
 class HomeActivity : AppCompatActivity() {
@@ -62,6 +64,4 @@ class HomeActivity : AppCompatActivity() {
 
         })
     }
-
-
 }

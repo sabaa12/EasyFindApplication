@@ -1,5 +1,6 @@
 package com.example.easyfindapp.adapters
 
+import android.annotation.SuppressLint
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -23,6 +24,7 @@ class SkillsRecyclerAdapter(private val skills: MutableList<String>) :
     }
 
     inner class SkillViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
+        @SuppressLint("SetTextI18n")
         fun onBindSkill() {
             itemView.recyclerSkillView.text = skills[adapterPosition]
         }

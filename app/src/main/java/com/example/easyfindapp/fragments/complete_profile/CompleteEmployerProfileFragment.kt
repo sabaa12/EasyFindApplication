@@ -33,7 +33,7 @@ import org.json.JSONObject
 import java.util.*
 
 class CompleteEmployerProfileFragment : BaseFragment() {
-    private var employerType: Int? = null
+    private var employerType: String? = null
     private var imageUri: Uri? = null
     private var gender: String? = null
     private var uploadedImage: String? = null
@@ -52,7 +52,7 @@ class CompleteEmployerProfileFragment : BaseFragment() {
         clickListeners()
         selectGender()
         Toast.makeText(
-            activity!!,
+            requireActivity(),
             UserPreference.getData(UserPreference.USER_ID),
             Toast.LENGTH_LONG
         ).show()
@@ -64,7 +64,7 @@ class CompleteEmployerProfileFragment : BaseFragment() {
         }
 
         itemView!!.completeEmployerProfileBtn.setOnClickListener {
-            if (employerType == 0) {
+            if (employerType == PERSON) {
                 checkPersonEmptyFields()
             } else {
                 checkCompanyEmptyFields()
@@ -101,21 +101,21 @@ class CompleteEmployerProfileFragment : BaseFragment() {
                 position: Int,
                 id: Long
             ) {
-
-                employerType = position
                 when (position) {
                     0 -> {
+                        employerType = PERSON
                         itemView!!.companyNameTextInputLayout.visibility = View.INVISIBLE
                         itemView!!.personGroup.visibility = View.VISIBLE
                     }
                     1 -> {
+                        employerType = COMPANY
                         itemView!!.personGroup.visibility = View.GONE
                         itemView!!.companyNameTextInputLayout.visibility = View.VISIBLE
                     }
                 }
             }
         }
-        val spinnerAdapter = ArrayAdapter(activity!!, R.layout.spinner_item, types)
+        val spinnerAdapter = ArrayAdapter(requireActivity(), R.layout.spinner_item, types)
         spinnerAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
         itemView!!.selectEmployerTypeSpinner.adapter = spinnerAdapter
     }
@@ -126,7 +126,7 @@ class CompleteEmployerProfileFragment : BaseFragment() {
         val age = itemView!!.inputAgeEmployer
         if (userName.text.isEmpty() || emailAddress.text.isEmpty() || age.text.isEmpty() || gender == null || uploadedImage == null) {
             Tools.errorDialog(
-                activity!!,
+                requireActivity(),
                 resources.getString(R.string.required_fields),
                 resources.getString(R.string.fill_complete_employer_person_profile_required_fields),
                 resources.getString(R.string.try_again)
@@ -168,7 +168,7 @@ class CompleteEmployerProfileFragment : BaseFragment() {
         val emailAddress = itemView!!.emailAddressEmployerView
         if (companyName.text.isEmpty() || emailAddress.text.isEmpty() || uploadedImage == null) {
             Tools.errorDialog(
-                activity!!,
+                requireActivity(),
                 resources.getString(R.string.required_fields),
                 resources.getString(R.string.fill_complete_employer_company_profile_required_fields),
                 resources.getString(R.string.try_again)
@@ -205,6 +205,7 @@ class CompleteEmployerProfileFragment : BaseFragment() {
             if (responseJson.has("profile_completed")) {
                 val profileCompleted = responseJson.getBoolean("profile_completed")
                 if (profileCompleted) {
+                    UserPreference.saveData(UserPreference.EMPLOYER_TYPE, employerType!!)
                     openDashBoard()
                 }
             }
@@ -221,22 +222,21 @@ class CompleteEmployerProfileFragment : BaseFragment() {
     }
 
     private fun openDashBoard() {
-        val intent = Intent(activity!!, HomeActivity::class.java)
+        val intent = Intent(requireActivity(), HomeActivity::class.java)
         intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK or Intent.FLAG_ACTIVITY_NEW_TASK)
         startActivity(intent)
-        activity!!.overridePendingTransition(android.R.anim.fade_in, android.R.anim.fade_out)
+        requireActivity().overridePendingTransition(android.R.anim.fade_in, android.R.anim.fade_out)
     }
-
 
     @SuppressLint("ObsoleteSdkInt")
     private fun checkPermissions() {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
             if (!(checkReadExternalStoragePermission(
-                    activity!!.applicationContext
+                    requireActivity().applicationContext
                 ) && checkWriteExternalStoragePermission(
-                    activity!!.applicationContext
+                    requireActivity().applicationContext
                 ) && checkCameraPermission(
-                    activity!!.applicationContext
+                    requireActivity().applicationContext
                 ))
             ) {
                 requestPermissions(
@@ -251,7 +251,6 @@ class CompleteEmployerProfileFragment : BaseFragment() {
             }
         }
     }
-
 
     private fun saveImage(imageUri: Uri) {
         val randomName: String = UUID.randomUUID().toString()
@@ -315,7 +314,7 @@ class CompleteEmployerProfileFragment : BaseFragment() {
         val values = ContentValues()
         values.put(MediaStore.Images.Media.TITLE, "New picture")
         values.put(MediaStore.Images.Media.DESCRIPTION, "Picture from Camera")
-        imageUri = activity!!.contentResolver.insert(
+        imageUri = requireActivity().contentResolver.insert(
             MediaStore.Images.Media.EXTERNAL_CONTENT_URI, values
         )
 
@@ -332,7 +331,7 @@ class CompleteEmployerProfileFragment : BaseFragment() {
 
     private fun imageUploadChooser() {
         Tools.uploadImageChooser(
-            activity!!,
+            requireActivity(),
             resources.getString(R.string.choose),
             resources.getString(R.string.close)
         ) {
