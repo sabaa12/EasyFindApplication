@@ -1,11 +1,17 @@
 package com.example.easyfindapp.tools
 
+import android.app.Activity
 import android.app.Dialog
 import android.content.Context
 import android.util.Patterns
+import android.view.View
 import android.view.ViewGroup
+import androidx.lifecycle.ViewModelProvider
 import com.example.easyfindapp.R
+import com.example.easyfindapp.activities.CreatePostEmployerActivity
+import com.example.easyfindapp.models.ItemModel
 import com.example.easyfindapp.user_preference.UserPreference
+import kotlinx.android.synthetic.main.choose_experience.*
 import kotlinx.android.synthetic.main.error_dialog_layout.*
 import kotlinx.android.synthetic.main.error_dialog_layout.closeDialogView
 import kotlinx.android.synthetic.main.image_uploader_chooser.*
@@ -27,6 +33,45 @@ object Tools {
         errorDialog.closeDialogView.setOnClickListener {
             errorDialog.dismiss()
         }
+    }
+
+    fun chooserDialog(context: Activity,iemModel:ItemModel)  {
+        val chooserdialog = Dialog(context)
+        var clikeditem=""
+
+        chooserdialog.setContentView(R.layout.choose_experience)
+        chooserdialog.window!!.setBackgroundDrawableResource(android.R.color.transparent)
+        val params: ViewGroup.LayoutParams = chooserdialog.window!!.attributes
+        params.width = ViewGroup.LayoutParams.MATCH_PARENT
+        params.height = ViewGroup.LayoutParams.WRAP_CONTENT
+        chooserdialog.show()
+        chooserdialog.entryid.setOnClickListener(){
+            chooserdialog.entryclikedid.visibility=View.VISIBLE
+            clikeditem="Entry level"
+
+            chooserdialog.interchoceid.visibility=View.INVISIBLE
+            chooserdialog.expertchoseid.visibility=View.INVISIBLE
+        }
+        chooserdialog.expertid.setOnClickListener(){
+            chooserdialog.entryclikedid.visibility=View.INVISIBLE
+            clikeditem="Expert"
+
+            chooserdialog.interchoceid.visibility=View.INVISIBLE
+            chooserdialog.expertchoseid.visibility=View.VISIBLE
+        }
+        chooserdialog.intermedieteid.setOnClickListener(){
+            chooserdialog.entryclikedid.visibility=View.INVISIBLE
+            clikeditem="Intermediate"
+
+            chooserdialog.interchoceid.visibility=View.VISIBLE
+            chooserdialog.expertchoseid.visibility=View.INVISIBLE
+        }
+        chooserdialog.saveexperience.setOnClickListener {
+            iemModel.setvalue(clikeditem)
+            chooserdialog.dismiss()
+
+        }
+
     }
 
     fun uploadImageChooser(

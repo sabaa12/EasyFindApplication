@@ -1,7 +1,8 @@
 package com.example.easyfindapp.activities
 
+import android.content.Intent
 import android.os.Bundle
-import android.widget.Toast
+import android.view.View
 import androidx.appcompat.app.AppCompatActivity
 import androidx.viewpager.widget.ViewPager
 import com.example.easyfindapp.R
@@ -23,6 +24,9 @@ class HomeActivity : AppCompatActivity() {
 
     private fun init() {
         manageHomeViewPager()
+        listeners()
+        if( UserPreference.getData("Role")!="EMPLOYER")
+            btn.visibility=View.GONE
     }
 
     private fun manageHomeViewPager() {
@@ -64,4 +68,15 @@ class HomeActivity : AppCompatActivity() {
 
         })
     }
+    private fun listeners(){
+        btn.setOnClickListener(){
+            val role= UserPreference.getData("Role")
+            if(role=="EMPLOYER"){
+                val intent= Intent(this,CreatePostEmployerActivity::class.java)
+                startActivity(intent)
+            }
+        }
+    }
+
+
 }
