@@ -25,7 +25,7 @@ class HomeActivity : AppCompatActivity() {
     private fun init() {
         manageHomeViewPager()
         listeners()
-        if( UserPreference.getData("Role")!="Employer")
+        if( UserPreference.getData("Role")!="EMPLOYER")
             btn.visibility=View.GONE
     }
 
@@ -71,7 +71,7 @@ class HomeActivity : AppCompatActivity() {
     private fun listeners(){
         btn.setOnClickListener(){
             val role= UserPreference.getData("Role")
-            if(role=="Employer"){
+            if(role=="EMPLOYER"){
                 val intent= Intent(this,CreatePostEmployerActivity::class.java)
                 startActivity(intent)
             }
