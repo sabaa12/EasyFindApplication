@@ -6,11 +6,10 @@ import android.content.Context
 import android.util.Patterns
 import android.view.View
 import android.view.ViewGroup
-import androidx.lifecycle.ViewModelProvider
 import com.example.easyfindapp.R
-import com.example.easyfindapp.activities.CreatePostEmployerActivity
-import com.example.easyfindapp.models.ItemModel
+import com.example.easyfindapp.models.viewmodels.PostViewModel
 import com.example.easyfindapp.user_preference.UserPreference
+import com.example.easyfindapp.utils.EXPERIENCE_LEVEL
 import kotlinx.android.synthetic.main.choose_experience.*
 import kotlinx.android.synthetic.main.error_dialog_layout.*
 import kotlinx.android.synthetic.main.error_dialog_layout.closeDialogView
@@ -35,41 +34,44 @@ object Tools {
         }
     }
 
-    fun chooserDialog(context: Activity,iemModel:ItemModel)  {
-        val chooserdialog = Dialog(context)
-        var clikeditem=""
+    fun chooserDialog(context: Activity, postViewModel: PostViewModel) {
+        val chooserDialog = Dialog(context)
+        var clikeditem = ""
 
-        chooserdialog.setContentView(R.layout.choose_experience)
-        chooserdialog.window!!.setBackgroundDrawableResource(android.R.color.transparent)
-        val params: ViewGroup.LayoutParams = chooserdialog.window!!.attributes
+        chooserDialog.setContentView(R.layout.choose_experience)
+        chooserDialog.window!!.setBackgroundDrawableResource(android.R.color.transparent)
+        val params: ViewGroup.LayoutParams = chooserDialog.window!!.attributes
         params.width = ViewGroup.LayoutParams.MATCH_PARENT
         params.height = ViewGroup.LayoutParams.WRAP_CONTENT
-        chooserdialog.show()
-        chooserdialog.entryid.setOnClickListener(){
-            chooserdialog.entryclikedid.visibility=View.VISIBLE
-            clikeditem="Entry level"
+        chooserDialog.show()
+        chooserDialog.entryId.setOnClickListener {
+            chooserDialog.entryClicked.visibility = View.VISIBLE
+            clikeditem = "Entry level"
 
-            chooserdialog.interchoceid.visibility=View.INVISIBLE
-            chooserdialog.expertchoseid.visibility=View.INVISIBLE
+            chooserDialog.intermediateClicked.visibility = View.INVISIBLE
+            chooserDialog.expertClicked.visibility = View.INVISIBLE
         }
-        chooserdialog.expertid.setOnClickListener(){
-            chooserdialog.entryclikedid.visibility=View.INVISIBLE
-            clikeditem="Expert"
+        chooserDialog.expertId.setOnClickListener {
+            chooserDialog.entryClicked.visibility = View.INVISIBLE
+            clikeditem = "Expert"
 
-            chooserdialog.interchoceid.visibility=View.INVISIBLE
-            chooserdialog.expertchoseid.visibility=View.VISIBLE
+            chooserDialog.intermediateClicked.visibility = View.INVISIBLE
+            chooserDialog.expertClicked.visibility = View.VISIBLE
         }
-        chooserdialog.intermedieteid.setOnClickListener(){
-            chooserdialog.entryclikedid.visibility=View.INVISIBLE
-            clikeditem="Intermediate"
+        chooserDialog.intermediateId.setOnClickListener {
+            chooserDialog.entryClicked.visibility = View.INVISIBLE
+            clikeditem = "Intermediate"
 
-            chooserdialog.interchoceid.visibility=View.VISIBLE
-            chooserdialog.expertchoseid.visibility=View.INVISIBLE
+            chooserDialog.intermediateClicked.visibility = View.VISIBLE
+            chooserDialog.expertClicked.visibility = View.INVISIBLE
         }
-        chooserdialog.saveexperience.setOnClickListener {
-            iemModel.setvalue(clikeditem)
-            chooserdialog.dismiss()
-
+        chooserDialog.saveExperience.setOnClickListener {
+            if (clikeditem == "") {
+                postViewModel.setValue(EXPERIENCE_LEVEL)
+            } else {
+                postViewModel.setValue(clikeditem)
+            }
+            chooserDialog.dismiss()
         }
 
     }

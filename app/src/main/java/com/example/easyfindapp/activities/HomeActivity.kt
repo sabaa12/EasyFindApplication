@@ -12,6 +12,7 @@ import com.example.easyfindapp.fragments.home.FavouritesFragment
 import com.example.easyfindapp.fragments.home.MessagesFragment
 import com.example.easyfindapp.fragments.home.ProfileFragment
 import com.example.easyfindapp.user_preference.UserPreference
+import com.example.easyfindapp.utils.EMPLOYER
 import kotlinx.android.synthetic.main.activity_home.*
 
 class HomeActivity : AppCompatActivity() {
@@ -25,8 +26,8 @@ class HomeActivity : AppCompatActivity() {
     private fun init() {
         manageHomeViewPager()
         listeners()
-        if( UserPreference.getData("Role")!="EMPLOYER")
-            btn.visibility=View.GONE
+        if (UserPreference.getData(UserPreference.ROLE) != EMPLOYER)
+            btn.visibility = View.GONE
     }
 
     private fun manageHomeViewPager() {
@@ -65,18 +66,16 @@ class HomeActivity : AppCompatActivity() {
             override fun onPageSelected(position: Int) {
                 nav_view.menu.getItem(position).isChecked = true
             }
-
         })
     }
-    private fun listeners(){
-        btn.setOnClickListener(){
-            val role= UserPreference.getData("Role")
-            if(role=="EMPLOYER"){
-                val intent= Intent(this,CreatePostEmployerActivity::class.java)
+
+    private fun listeners() {
+        btn.setOnClickListener() {
+            val role = UserPreference.getData(UserPreference.ROLE)
+            if (role == EMPLOYER) {
+                val intent = Intent(this, CreatePostEmployerActivity::class.java)
                 startActivity(intent)
             }
         }
     }
-
-
 }
