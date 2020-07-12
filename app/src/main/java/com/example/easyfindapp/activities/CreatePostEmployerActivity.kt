@@ -68,7 +68,7 @@ class CreatePostEmployerActivity : AppCompatActivity() {
                 val parameters = mutableMapOf<String, String>()
                 parameters["json"] = stringJson
                 ResponseLoader.getPostResponse(
-                    EndPoints.COMPLETE_PROFILE_DEVELOPERS,
+                    EndPoints.CREATE_POST,
                     parameters,
                     spinLoaderView,
                     object : ResponseCallback {

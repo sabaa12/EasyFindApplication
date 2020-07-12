@@ -10,6 +10,8 @@ object EndPoints {
     const val GET_EMPLOYER_USER_PERSON = "GetEmployerUsersPerson"
     const val GET_EMPLOYER_USER_COMPANY = "GetEmployerUsersCompany"
     const val IS_USER_COMPLETED = "isusercomplete"
+    const val CREATE_POST="CreatePost"
+    const val GET_POSTS="GetPosts"
 
     const val HTTP_200_OK = 200
     const val HTTP_201_CREATED = 201
