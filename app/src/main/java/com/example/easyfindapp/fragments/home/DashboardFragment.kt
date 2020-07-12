@@ -21,6 +21,7 @@ import com.example.easyfindapp.network.ResponseCallback
 import com.example.easyfindapp.network.ResponseLoader
 import com.google.gson.Gson
 import kotlinx.android.synthetic.main.fragment_dashboard.*
+import kotlinx.android.synthetic.main.fragment_dashboard.view.*
 import kotlinx.android.synthetic.main.loader_layout.*
 
 class DashboardFragment : BaseFragment() {
@@ -54,7 +55,7 @@ class DashboardFragment : BaseFragment() {
     }
     private fun setAdapter(list:MutableList<CreatePostModel>){
         adapter= PostsRecyclerAdapter(list)
-        postsRecyclerView.layoutManager= LinearLayoutManager(context)
-        postsRecyclerView.adapter=adapter
+        itemView!!.postsRecyclerView.layoutManager= LinearLayoutManager(context)
+        itemView!!.postsRecyclerView.adapter=adapter
     }
 }
