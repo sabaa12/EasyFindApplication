@@ -10,6 +10,9 @@ interface ApiService {
     @GET("{path}/{id}")
     fun requestGetWithID(@Path("path") path: String, @Path("id") id: String): Call<String>
 
+    @GET("{path}")
+    fun requestGet(@Path("path") path: String): Call<String>
+
     @FormUrlEncoded
     @POST("{path}")
     fun requestPOST(

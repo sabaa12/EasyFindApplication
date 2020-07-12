@@ -14,12 +14,12 @@
     <string name="choose_your_role">Choose Your Role</string>
     <string name="try_again">Try Again</string>
     <string name="required_fields">Required Fields</string>
+    <string name="fill_create_post_fields">Please fill title, description, choose experience level and select at least 1 skill!</string>
     <string name="fill_sign_in_required_fields">Please fill email address and password fields!</string>
     <string name="fill_sign_up_required_fields">Please fill email address,password and confirm password fields!</string>
     <string name="fill_complete_developers_profile_required_fields">Please choose profile photo, fill username,position,age,gender fields and select at least 1 skill!</string>
     <string name="fill_complete_employer_person_profile_required_fields">Please choose profile photo, fill username,email address,gender,gender fields!</string>
     <string name="fill_complete_employer_company_profile_required_fields">Please choose company logo, fill company name!</string>
-    <string name="fill_create_post_fields">Please fill title, description, choose experience level and select at least 1 skill!</string>
     <string name="password_mismatch">Password Mismatch</string>
     <string name="match_password">Please write same passwords!</string>
     <string name="sign_out">Sign Out</string>
@@ -52,8 +52,8 @@
     <string name="experience_level">Experience level</string>
     <string name="entry_level">Entry level</string>
     <string name="save">save</string>
-    <string name="intermediate">Intermediate</string>
-    <string name="expert">Expert</string>
-    <string name="create_post">create post</string>
+    <string name="intermediate">intermediate</string>
+    <string name="create_post">Create Post</string>
+    <string name="required_skills">Required Skills:</string>
 
 </resources>

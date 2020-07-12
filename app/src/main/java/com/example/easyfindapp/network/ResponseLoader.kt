@@ -26,6 +26,13 @@ object ResponseLoader {
     ) {
         apiService.requestGetWithID(path, id).enqueue(callback(loaderView, responseCallback))
     }
+    fun getResponse(
+        path: String,
+        loaderView: View?,
+        responseCallback: ResponseCallback
+    ) {
+        apiService.requestGet(path).enqueue(callback(loaderView, responseCallback))
+    }
 
 
     fun getPostResponse(
